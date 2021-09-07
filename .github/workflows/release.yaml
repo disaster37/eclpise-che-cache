@@ -47,10 +47,14 @@ jobs:
         path: che-plugin-registry 
     - name: Build offline che-plugin-registry
       run: |
+        #!/bin/sh
         set -e
         cd che-plugin-registry
         ./build.sh --tag ${{ github.event.inputs.version }} --registry docker.io --organization webcenter --rhel --offline
-        docker run -t --rm --entrypoint cat webcenter/che-plugin-registry:7.35.2 /var/www/html/v3/external_images.txt
+        cat output/v3/external_images.txt | while read line
+        do
+          echo $line
+        done
     
     # che-devfile-registry
     - name: Checkout che-devfile-registry
