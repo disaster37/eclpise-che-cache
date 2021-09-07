@@ -38,19 +38,29 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     
-    # Checkout che-plugin
+    # che-plugin-registry
     - name: Checkout che-plugin-registry
       uses: actions/checkout@v2
       with:
         repository: eclipse-che/che-plugin-registry
         ref: "${{ github.event.inputs.version }}"
-        path: che-plugin-registry
-    
-    
-    # Build offline che-plugin-registry
+        path: che-plugin-registry 
     - name: Build offline che-plugin-registry
       run: |
         set -e
         cd che-plugin-registry
+        ./build.sh --tag ${{ github.event.inputs.version }} --registry docker.io --organization webcenter --rhel --offline
+    
+    # che-devfile-registry
+    - name: Checkout che-devfile-registry
+      uses: actions/checkout@v2
+      with:
+        repository: eclipse-che/che-devfile-registry
+        ref: "${{ github.event.inputs.version }}"
+        path: che-devfile-registry
+    - name: Build offline che-devfile-registry
+      run: |
+        set -e
+        cd che-devfile-registry
         ./build.sh --tag ${{ github.event.inputs.version }} --registry docker.io --organization webcenter --rhel --offline
     
