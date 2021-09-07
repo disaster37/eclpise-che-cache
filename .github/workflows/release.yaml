@@ -1,18 +1,12 @@
 name: 'build'
-inputs:
-  version:
-    descritpion: 'The che version to cache'
-    required: true
+
 
 on:
-  push:
-    branches:
-      - main
-    pull_request:
-      branches:
-        - main
-    tags:
-      - '*'
+   workflow_dispatch:
+     inputs:
+      version:
+        descritpion: 'The che version to cache'
+        required: true
 
 jobs:
   # The "build" workflow
