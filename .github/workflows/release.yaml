@@ -65,3 +65,13 @@ jobs:
         cd che-devfile-registry
         ./build.sh --tag ${{ github.event.inputs.version }} --registry docker.io --organization webcenter --rhel --offline
     
+    # che internal image
+    - name: Clone Eclpise Che internal image
+      run: |
+        set -e
+        docker run --rm -ti ananace/skopeo:latest docker://quay.io/eclipse/che-server:${{ github.event.inputs.version }} docker://webcenter/che-server:${{ github.event.inputs.version }}
+        docker run --rm -ti ananace/skopeo:latest docker://quay.io/eclipse/che-postgres:${{ github.event.inputs.version }} docker://webcenter/che-postgres:${{ github.event.inputs.version }}
+        docker run --rm -ti ananace/skopeo:latest docker://quay.io/eclipse/che-keycloak:${{ github.event.inputs.version }} docker://webcenter/che-keycloak:${{ github.event.inputs.version }}
+        docker run --rm -ti ananace/skopeo:latest docker://quay.io/eclipse/che-jwtproxy:${{ github.event.inputs.version }} docker://webcenter/che-jwtproxy:${{ github.event.inputs.version }}
+        docker run --rm -ti ananace/skopeo:latest docker://quay.io/eclipse/che-plugin-artifacts-broker:${{ github.event.inputs.version }} docker://webcenter/che-plugin-artifacts-broker:${{ github.event.inputs.version }}
+        docker run --rm -ti ananace/skopeo:latest docker://quay.io/eclipse/che-plugin-metadata-broker:${{ github.event.inputs.version }} docker://webcenter/che-plugin-metadata-broker:${{ github.event.inputs.version }}
