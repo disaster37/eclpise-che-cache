@@ -50,6 +50,7 @@ jobs:
         set -e
         cd che-plugin-registry
         ./build.sh --tag ${{ github.event.inputs.version }} --registry docker.io --organization webcenter --rhel --offline
+        docker run -it --rm --entrypoint cat webcenter/che-plugin-registry:7.35.2 /var/www/html/v3/external_images.txt
     
     # che-devfile-registry
     - name: Checkout che-devfile-registry
