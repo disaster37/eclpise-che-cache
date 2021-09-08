@@ -51,14 +51,28 @@ jobs:
         #!/bin/sh
         set -e
         cd che-plugin-registry
-        BUILDER=docker SKIP_FORMAT=true SKIP_LINT=true SKIP_TEST=true ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline --skip-digest-generation
-        docker image ls
-        docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
+        #BUILDER=docker SKIP_FORMAT=true SKIP_LINT=true SKIP_TEST=true ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        #docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
+
+        # Build sidecard
+        for file in sidecars/*; do
+          SIDECAR_NAME=$(echo "$file" | cut -d/ -f 2)
+          PLATFORMS=$(cat sidecars/"$SIDECAR_NAME"/PLATFORMS)
+          SHORT_SHA1=$(git rev-parse --short=7 HEAD)
+          IMAGE_NAME=quay.io/webcenter-che/che-plugin-sidecar:"$SIDECAR_NAME"-"$SHORT_SHA1"
+          echo "Building $IMAGE_NAME"
+          docker buildx build --platform "$PLATFORMS" -t "$IMAGE_NAME" \
+                    --push sidecars/"$SIDECAR_NAME"/
+        done
+
+        # Copye external images
         cat output/v3/external_images.txt | while read line
         do
-          IMAGE=$(echo $line | cut -d'/' -f 3)
-          echo "Copy image $line to quay.io/webcenter-che/$IMAGE"
-          docker run --rm -t ananace/skopeo:latest copy docker://$line docker://quay.io/webcenter-che/$IMAGE
+          if [[ $line != quay.io/eclipse/che-plugin-sidecar:* ]]; then
+            IMAGE=$(echo $line | cut -d'/' -f 3)
+            echo "Copy image $line to quay.io/webcenter-che/$IMAGE"
+            docker run --rm -t ananace/skopeo:latest copy docker://$line docker://quay.io/webcenter-che/$IMAGE
+          fi
         done
     
     # che-devfile-registry
