@@ -44,7 +44,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: eclipse-che/che-plugin-registry
-        ref: "${{ github.event.inputs.version }}"
+        ref: "7.35.x"
         path: che-plugin-registry 
     - name: Build offline che-plugin-registry
       run: |
