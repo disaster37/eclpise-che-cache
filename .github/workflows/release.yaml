@@ -51,7 +51,7 @@ jobs:
         #!/bin/sh
         set -e
         cd che-plugin-registry
-        BUILDER=docker SKIP_FORMAT=true SKIP_LINT=true SKIP_TEST=true ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        BUILDER=docker SKIP_FORMAT=true SKIP_LINT=true SKIP_TEST=true ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline --skip-digest-generation
         docker image ls
         docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
         cat output/v3/external_images.txt | while read line
