@@ -29,14 +29,14 @@ jobs:
       run: npm install -g yarn
     
     # Setup docker
-    - uses: docker-practice/actions-setup-docker@master
-      with:
-        docker_buildx: false
-        docker_cli_experimental: false
-        docker_daemon_json: |
-          {
-            "experimental": false
-          }
+    #- uses: docker-practice/actions-setup-docker@master
+    #  with:
+    #    docker_buildx: false
+    #    docker_cli_experimental: false
+    #    docker_daemon_json: |
+    #      {
+    #        "experimental": false
+    #      }
 
     # Login to docker hub
     - name: Login to DockerHub
