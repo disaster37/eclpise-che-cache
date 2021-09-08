@@ -29,14 +29,7 @@ jobs:
       run: npm install -g yarn
     
     # Setup docker
-    #- uses: docker-practice/actions-setup-docker@master
-    #  with:
-    #    docker_buildx: false
-    #    docker_cli_experimental: false
-    #    docker_daemon_json: |
-    #      {
-    #        "experimental": false
-    #      }
+    - uses: docker-practice/actions-setup-docker@master
 
     # Login to docker hub
     - name: Login to DockerHub
@@ -58,9 +51,8 @@ jobs:
         #!/bin/sh
         set -e
         cd che-plugin-registry
-        ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
         docker image ls
-        echo "docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}"
         docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
         cat output/v3/external_images.txt | while read line
         do
@@ -80,7 +72,7 @@ jobs:
       run: |
         set -e
         cd che-devfile-registry
-        ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
         docker push quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }}
         cat output/v3/external_images.txt | while read line
         do
