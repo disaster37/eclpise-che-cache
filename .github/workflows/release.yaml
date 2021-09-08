@@ -30,6 +30,8 @@ jobs:
     
     # Setup docker
     - uses: docker-practice/actions-setup-docker@master
+      with:
+        docker_buildx: false
 
     # Login to docker hub
     - name: Login to DockerHub
@@ -54,9 +56,11 @@ jobs:
         ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
         docker image ls
         echo "docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}"
+        docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
         cat output/v3/external_images.txt | while read line
         do
           IMAGE=$(echo $line | cut -d'/' -f 3)
+          echo "Copy image $line to quay.io/webcenter-che/$IMAGE"
           docker run --rm -t ananace/skopeo:latest copy docker://$line docker://quay.io/webcenter-che/$IMAGE
         done
     
