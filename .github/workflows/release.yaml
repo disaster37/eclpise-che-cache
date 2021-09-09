@@ -51,7 +51,7 @@ jobs:
         #!/bin/sh
         set -e
         cd che-plugin-registry
-        BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        rm -rf output && BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
         docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
 
         # Build sidecard
