@@ -51,9 +51,8 @@ jobs:
         #!/bin/sh
         set -e
         cd che-plugin-registry
-        BUILDER=docker SKIP_FORMAT=true SKIP_LINT=true SKIP_TEST=true ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline --skip-oci-image
-        docker buildx build -t "quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}" --push .
-        #docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
+        BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
 
         # Build sidecard
         #for file in sidecars/*; do
@@ -67,13 +66,11 @@ jobs:
         #done
 
         # Copye external images
-        cat output/v3/external_images.txt | while read line
+        docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
         do
-          if [[ $line != quay.io/eclipse/che-plugin-sidecar:* ]]; then
             IMAGE=$(echo $line | cut -d'/' -f 3)
             echo "Copy image $line to quay.io/webcenter-che/$IMAGE"
             docker run --rm -t ananace/skopeo:latest copy docker://$line docker://quay.io/webcenter-che/$IMAGE
-          fi
         done
     
     # che-devfile-registry
