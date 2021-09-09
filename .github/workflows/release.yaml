@@ -50,6 +50,8 @@ jobs:
       run: |
         #!/bin/sh
         set -e
+        yarn --version
+        node --version
         cd che-plugin-registry
         rm -rf output && BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
         docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
