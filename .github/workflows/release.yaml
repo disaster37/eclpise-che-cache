@@ -26,7 +26,7 @@ jobs:
     
     # Setup yarn
     - name: Install Yarn
-      run: npm install -g yarn
+      run: npm install -g yarn@berry
     
     # Setup docker
     - uses: docker-practice/actions-setup-docker@master
