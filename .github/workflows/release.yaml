@@ -56,8 +56,8 @@ jobs:
         cd che-plugin-registry
         git fetch
         git checkout ${{ github.event.inputs.version }}
-        #rm -rf output && BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
-        #docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
+        rm -rf output && BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
 
         # Copye external images
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
@@ -80,21 +80,23 @@ jobs:
         cd che-devfile-registry
         git fetch
         git checkout ${{ github.event.inputs.version }}
-        #BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
-        #docker push quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }}
+        BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        docker push quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }}
          docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
         do
-          IMAGE=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n')
-          docker run --rm -t ananace/skopeo:latest copy docker://$line docker://quay.io/webcenter-che/$IMAGE
+          SRC_IMAGE=$(echo $line | tr -d '\r\n')
+          DST_IMAGE=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//)
+          echo "Copy image '${SRC_IMAGE}' to '${DST_IMAGE}'"
+          skopeo copy --all docker://${SRC_IMAGE} docker://${DST_IMAGE}
         done
     
     # che internal image
     - name: Clone Eclpise Che internal image
       run: |
         set -e
-        docker run --rm -t ananace/skopeo:latest copy docker://quay.io/eclipse/che-server:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-server:${{ github.event.inputs.version }}
-        docker run --rm -t ananace/skopeo:latest copy docker://quay.io/eclipse/che-postgres:${{ github.event.inputs.version }} docker:/quay.io/webcenter-che/che-postgres:${{ github.event.inputs.version }}
-        docker run --rm -t ananace/skopeo:latest copy docker://quay.io/eclipse/che-keycloak:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-keycloak:${{ github.event.inputs.version }}
-        docker run --rm -t ananace/skopeo:latest copy docker://quay.io/eclipse/che-jwtproxy:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-jwtproxy:${{ github.event.inputs.version }}
-        docker run --rm -t ananace/skopeo:latest copy docker://quay.io/eclipse/che-plugin-artifacts-broker:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-plugin-artifacts-broker:${{ github.event.inputs.version }}
-        docker run --rm -t ananace/skopeo:latest copy docker://quay.io/eclipse/che-plugin-metadata-broker:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-plugin-metadata-broker:${{ github.event.inputs.version }}
+        skopeo copy docker://quay.io/eclipse/che-server:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-server:${{ github.event.inputs.version }}
+        skopeo copy docker://quay.io/eclipse/che-postgres:${{ github.event.inputs.version }} docker:/quay.io/webcenter-che/che-postgres:${{ github.event.inputs.version }}
+        skopeo copy docker://quay.io/eclipse/che-keycloak:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-keycloak:${{ github.event.inputs.version }}
+        skopeo copy docker://quay.io/eclipse/che-jwtproxy:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-jwtproxy:${{ github.event.inputs.version }}
+        skopeo copy docker://quay.io/eclipse/che-plugin-artifacts-broker:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-plugin-artifacts-broker:${{ github.event.inputs.version }}
+        skopeo copy docker://quay.io/eclipse/che-plugin-metadata-broker:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-plugin-metadata-broker:${{ github.event.inputs.version }}
