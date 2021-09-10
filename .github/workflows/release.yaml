@@ -62,9 +62,10 @@ jobs:
         # Copye external images
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
         do
-            IMAGE=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n')
-            echo "Copy image '$line' to 'quay.io/webcenter-che/$IMAGE'"
-            skopeo copy docker://$line docker://quay.io/webcenter-che/$IMAGE
+            SRC_IMAGE=$(echo $line | tr -d '\r\n')
+            DST_IMAGE=quay.io/webcenter-che/$(echo $line | cut -d'/' -f 3 | tr -d '\r\n')
+            echo "Copy image '$SRC_IMAGE' to 'DST_IMAGE'"
+            skopeo copy docker://SRC_IMAGE docker://DST_IMAGE
         done
     
     # che-devfile-registry
