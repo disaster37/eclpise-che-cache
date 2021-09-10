@@ -64,8 +64,8 @@ jobs:
         do
             SRC_IMAGE=$(echo $line | tr -d '\r\n')
             DST_IMAGE=quay.io/webcenter-che/$(echo $line | cut -d'/' -f 3 | tr -d '\r\n')
-            echo "Copy image '$SRC_IMAGE' to 'DST_IMAGE'"
-            skopeo copy docker://SRC_IMAGE docker://DST_IMAGE
+            echo "Copy image '${SRC_IMAGE}' to '${DST_IMAGE}'"
+            skopeo copy docker://${SRC_IMAGE} docker://${DST_IMAGE}
         done
     
     # che-devfile-registry
