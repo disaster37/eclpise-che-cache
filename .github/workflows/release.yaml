@@ -44,28 +44,16 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: eclipse-che/che-plugin-registry
-        ref: "${{ github.event.inputs.version }}"
         path: che-plugin-registry 
     - name: Build offline che-plugin-registry
       run: |
         #!/bin/sh
         set -e
-        yarn --version
-        node --version
         cd che-plugin-registry
+        git fetch
+        git checkout ${{ github.event.inputs.version }}
         rm -rf output && BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
         docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
-
-        # Build sidecard
-        #for file in sidecars/*; do
-        #  SIDECAR_NAME=$(echo "$file" | cut -d/ -f 2)
-        #  PLATFORMS=$(cat sidecars/"$SIDECAR_NAME"/PLATFORMS)
-        #  SHORT_SHA1=$(git rev-parse --short=7 HEAD)
-        #  IMAGE_NAME=quay.io/webcenter-che/che-plugin-sidecar:"$SIDECAR_NAME"-"$SHORT_SHA1"
-        #  echo "Building $IMAGE_NAME"
-        #  docker buildx build --platform "$PLATFORMS" -t "$IMAGE_NAME" \
-        #            --push sidecars/"$SIDECAR_NAME"/
-        #done
 
         # Copye external images
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
@@ -80,15 +68,16 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: eclipse-che/che-devfile-registry
-        ref: "${{ github.event.inputs.version }}"
         path: che-devfile-registry
     - name: Build offline che-devfile-registry
       run: |
         set -e
         cd che-devfile-registry
+        git fetch
+        git checkout ${{ github.event.inputs.version }}
         BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
         docker push quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }}
-        cat output/v3/external_images.txt | while read line
+         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
         do
           IMAGE=$(echo $line | cut -d'/' -f 3)
           docker run --rm -t ananace/skopeo:latest copy docker://$line docker://quay.io/webcenter-che/$IMAGE
