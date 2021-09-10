@@ -33,7 +33,7 @@ jobs:
 
     # Setup skopoa
     - name: Install skopeo
-      run: apt-get update && apt-get -y install skopeo
+      run: sudo apt-get update && sudo apt-get -y install skopeo
 
     # Login to docker hub
     - name: Login to DockerHub
