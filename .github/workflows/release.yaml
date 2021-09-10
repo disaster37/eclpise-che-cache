@@ -56,8 +56,8 @@ jobs:
         cd che-plugin-registry
         git fetch
         git checkout ${{ github.event.inputs.version }}
-        rm -rf output && BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
-        docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
+        #rm -rf output && BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        #docker push quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }}
 
         # Copye external images
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
