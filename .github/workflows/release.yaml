@@ -80,9 +80,9 @@ jobs:
         cd che-devfile-registry
         git fetch
         git checkout ${{ github.event.inputs.version }}
-        BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --rhel --offline
+        BUILDER=docker ./build.sh --tag ${{ github.event.inputs.version }} --registry quay.io --organization webcenter-che --offline
         docker push quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }}
-         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
+        docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
         do
           SRC_IMAGE=$(echo $line | tr -d '\r\n')
           DST_IMAGE=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//)
