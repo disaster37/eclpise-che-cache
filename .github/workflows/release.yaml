@@ -70,7 +70,7 @@ jobs:
             curl -X POST https://quay.io/api/v1/repository \
               -H 'Authorization: Bearer ${{ secrets.QUAY_BEARER_TOKEN }}' \
               -H 'Content-Type: application/json' \
-              -d '{"namespace":"webcenter-che", "repository":"${REPO_NAME}", "description": "created by che cache script", "visibility": "public"}'
+              -d "{\"namespace\":\"webcenter-che\", \"repository\":\"${REPO_NAME}\", \"description\": \"created by che cache script\", \"visibility\": \"public\"}"
             echo "Copy image '${SRC_IMAGE}' to '${DST_IMAGE}'"
             skopeo copy --all docker://${SRC_IMAGE} docker://${DST_IMAGE}
         done
@@ -99,7 +99,7 @@ jobs:
             curl -X POST https://quay.io/api/v1/repository \
               -H 'Authorization: Bearer ${{ secrets.QUAY_BEARER_TOKEN }}' \
               -H 'Content-Type: application/json' \
-              -d '{"namespace":"webcenter-che", "repository":"${REPO_NAME}", "description": "created by che cache script", "visibility": "public"}'
+              -d "{\"namespace\":\"webcenter-che\", \"repository\":\"${REPO_NAME}\", \"description\": \"created by che cache script\", \"visibility\": \"public\"}"
           echo "Copy image '${SRC_IMAGE}' to '${DST_IMAGE}'"
           skopeo copy --all docker://${SRC_IMAGE} docker://${DST_IMAGE}
         done
