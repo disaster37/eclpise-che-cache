@@ -63,8 +63,9 @@ jobs:
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
         do
             SRC_IMAGE=$(echo $line | tr -d '\r\n')
-            DST_IMAGE=quay.io/webcenter-che/$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//')
-            REPO_NAME=$(echo ${DST_IMAGE}) | cut -d ':' -f 1
+            TMP_NAME=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//')
+            DST_IMAGE=quay.io/webcenter-che/${TMP_NAME}
+            REPO_NAME=$(echo ${TMP_NAME} | cut -d ':' -f 1)
             echo "Create repo ${REPO_NAME}"
             curl -X POST https://quay.io/api/v1/repository \
               -H 'Authorization: Bearer ${{ secrets.QUAY_BEARER_TOKEN }}' \
@@ -91,8 +92,9 @@ jobs:
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
         do
           SRC_IMAGE=$(echo $line | tr -d '\r\n')
-          DST_IMAGE=quay.io/webcenter-che/$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//')
-          REPO_NAME=$(echo ${DST_IMAGE}) | cut -d ':' -f 1
+          TMP_NAME=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//')
+          DST_IMAGE=quay.io/webcenter-che/${TMP_NAME}
+          REPO_NAME=$(echo ${TMP_NAME} | cut -d':' -f 1)
             echo "Create repo ${REPO_NAME}"
             curl -X POST https://quay.io/api/v1/repository \
               -H 'Authorization: Bearer ${{ secrets.QUAY_BEARER_TOKEN }}' \
