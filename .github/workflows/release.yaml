@@ -85,7 +85,7 @@ jobs:
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
         do
           SRC_IMAGE=$(echo $line | tr -d '\r\n')
-          DST_IMAGE=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//)
+          DST_IMAGE=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//')
           echo "Copy image '${SRC_IMAGE}' to '${DST_IMAGE}'"
           skopeo copy --all docker://${SRC_IMAGE} docker://${DST_IMAGE}
         done
