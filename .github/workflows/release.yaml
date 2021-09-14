@@ -63,7 +63,7 @@ jobs:
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
         do
             SRC_IMAGE=$(echo $line | tr -d '\r\n')
-            NB_CHAR=$(echo $line | grep "/" | wc -c)
+            NB_CHAR=$(echo $line | tr -cd '/' | wc -c)
             NB_CHAR=$((NB_CHAR+1))
             echo "NB char: ${NB_CHAR}"
             TMP_NAME=$(echo $line | cut -d'/' -f ${NB_CHAR} | tr -d '\r\n' |  sed 's/@sha256//')
@@ -95,7 +95,7 @@ jobs:
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
         do
           SRC_IMAGE=$(echo $line | tr -d '\r\n')
-          NB_CHAR=$(echo $line | grep "/" | wc -c)
+          NB_CHAR=$(echo $line | tr -cd '/' | wc -c)
           NB_CHAR=$((NB_CHAR+1))
           echo "NB char: ${NB_CHAR}"
           TMP_NAME=$(echo $line | cut -d'/' -f ${NB_CHAR} | tr -d '\r\n' |  sed 's/@sha256//')
