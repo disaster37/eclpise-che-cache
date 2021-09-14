@@ -63,7 +63,8 @@ jobs:
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-plugin-registry:${{ github.event.inputs.version }} /var/www/html/v3/external_images.txt | while read line
         do
             SRC_IMAGE=$(echo $line | tr -d '\r\n')
-            TMP_NAME=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//')
+            NB_CHAR=$(echo $line | grep "/" | wc -c)
+            TMP_NAME=$(echo $line | cut -d'/' -f $NB_CHAR | tr -d '\r\n' |  sed 's/@sha256//')
             DST_IMAGE=quay.io/webcenter-che/${TMP_NAME}
             REPO_NAME=$(echo ${TMP_NAME} | cut -d ':' -f 1)
             echo "Create repo ${REPO_NAME}"
@@ -92,7 +93,8 @@ jobs:
         docker run --rm -t --entrypoint cat quay.io/webcenter-che/che-devfile-registry:${{ github.event.inputs.version }} /var/www/html/devfiles/external_images.txt | while read line
         do
           SRC_IMAGE=$(echo $line | tr -d '\r\n')
-          TMP_NAME=$(echo $line | cut -d'/' -f 3 | tr -d '\r\n' |  sed 's/@sha256//')
+          NB_CHAR=$(echo $line | grep "/" | wc -c)
+          TMP_NAME=$(echo $line | cut -d'/' -f $NB_CHAR | tr -d '\r\n' |  sed 's/@sha256//')
           DST_IMAGE=quay.io/webcenter-che/${TMP_NAME}
           REPO_NAME=$(echo ${TMP_NAME} | cut -d':' -f 1)
             echo "Create repo ${REPO_NAME}"
