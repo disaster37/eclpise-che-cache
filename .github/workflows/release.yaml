@@ -115,7 +115,7 @@ jobs:
       run: |
         set -e
         skopeo copy docker://quay.io/eclipse/che-server:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-server:${{ github.event.inputs.version }}
-        skopeo copy docker://quay.io/eclipse/che-postgres:${{ github.event.inputs.version }} docker:/quay.io/webcenter-che/che-postgres:${{ github.event.inputs.version }}
+        skopeo copy docker://quay.io/eclipse/che-postgres:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-postgres:${{ github.event.inputs.version }}
         skopeo copy docker://quay.io/eclipse/che-keycloak:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-keycloak:${{ github.event.inputs.version }}
         skopeo copy docker://quay.io/eclipse/che-jwtproxy:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-jwtproxy:${{ github.event.inputs.version }}
         skopeo copy docker://quay.io/eclipse/che-plugin-artifacts-broker:${{ github.event.inputs.version }} docker://quay.io/webcenter-che/che-plugin-artifacts-broker:${{ github.event.inputs.version }}
